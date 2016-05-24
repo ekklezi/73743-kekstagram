@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Артем Максимушкин](https://up.htmlacademy.ru/javascript/5/user/73743).
-* Наставник: `Неизвестно`.
+* Наставник: [Вадим Федоров] (https://htmlacademy.ru/profile/id224110).
 
 ---
 
