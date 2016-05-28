@@ -82,7 +82,6 @@
     redraw: function() {
       // Очистка изображения.
       this._ctx.clearRect(0, 0, this._container.width, this._container.height);
-
       // Параметры линии.
       // NB! Такие параметры сохраняются на время всего процесса отрисовки
       // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
@@ -127,6 +126,13 @@
       // некорректно сработает даже очистка холста или нужно будет использовать
       // сложные рассчеты для координат прямоугольника, который нужно очистить.
       this._ctx.restore();
+      this._ctx.setLineDash([0, 0]);
+      this._ctx.lineWidth = 135;
+      this._ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+      this._ctx.strokeRect(0, 0, 590, 590);
+      this._ctx.font = '16px Arial';
+      this._ctx.fillStyle = 'white';
+      this._ctx.fillText(this._image.naturalWidth + ' x ' + this._image.naturalHeight, 260, 60);
     },
 
     /**
