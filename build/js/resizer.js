@@ -118,7 +118,6 @@
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2);
-
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
       // следующий кадр рисовался с привычной системой координат, где точка
@@ -127,12 +126,33 @@
       // сложные рассчеты для координат прямоугольника, который нужно очистить.
       this._ctx.restore();
       this._ctx.setLineDash([0, 0]);
-      this._ctx.lineWidth = 135;
+      var dashLineWidth = this._ctx.lineWidth;
+      //Рисуем две прямых, ограничивающих изображение сверху и снизу.
+      //Ширина высчитывается в зависимости от размера контейнера и изображения
+      this._ctx.beginPath();
+      this._ctx.lineWidth = (this._container.height - this._resizeConstraint.side) / 2;
       this._ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
-      this._ctx.strokeRect(0, 0, 590, 590);
+      this._ctx.moveTo(0, (this._ctx.lineWidth / 2) - dashLineWidth);
+      this._ctx.lineTo(this._container.width, (this._ctx.lineWidth / 2) - dashLineWidth);
+      this._ctx.moveTo(0, this._container.height - (this._ctx.lineWidth / 2));
+      this._ctx.lineTo(this._container.width, this._container.height - (this._ctx.lineWidth / 2));
+      this._ctx.stroke();
+      //Рисуем две прямых, ограничивающих изображение по бокам.
+      //Ширина высчитывается в зависимости от размера контейнера и изображения
+      var horizontalLineWidth = this._ctx.lineWidth;
+      this._ctx.beginPath();
+      this._ctx.lineWidth = (this._container.width - this._resizeConstraint.side) / 2;
+      this._ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+      this._ctx.moveTo((this._ctx.lineWidth / 2) - dashLineWidth, horizontalLineWidth - dashLineWidth);
+      this._ctx.lineTo((this._ctx.lineWidth / 2) - dashLineWidth, this._container.height - horizontalLineWidth);
+      this._ctx.moveTo(this._container.width - (this._ctx.lineWidth / 2), horizontalLineWidth - dashLineWidth);
+      this._ctx.lineTo(this._container.width - (this._ctx.lineWidth / 2), this._container.height - horizontalLineWidth);
+      this._ctx.stroke();
+      //Выводим размер оригинального изображения
       this._ctx.font = '16px Arial';
       this._ctx.fillStyle = 'white';
-      this._ctx.fillText(this._image.naturalWidth + ' x ' + this._image.naturalHeight, 260, 60);
+      this._ctx.textAlign = 'center';
+      this._ctx.fillText(this._image.naturalWidth + ' x ' + this._image.naturalHeight, this._container.width / 2, horizontalLineWidth / 2);
     },
 
     /**
