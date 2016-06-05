@@ -75,8 +75,7 @@
   var resizerY = document.querySelector('#resize-y');
   var resizerSide = document.querySelector('#resize-size');
   var resizeFwd = document.querySelector('#resize-fwd');
-  
-  var setResizerMinMax = function () {
+  var setResizerMinMax = function() {
     resizerX.min = 0;
     resizerY.min = 0;
     resizerSide.min = 0;
@@ -84,9 +83,9 @@
     var originalHeight = currentResizer._image.naturalHeight;
     resizerX.max = originalWidth - parseFloat(resizerSide.value || 0);
     resizerY.max = originalHeight - parseFloat(resizerSide.value || 0);
-    resizerSide.max = Math.min (originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
-    };
-  var toggleResizeFwd = function (enable) {
+    resizerSide.max = Math.min(originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
+  };
+  var toggleResizeFwd = function(enable) {
     if (enable) {
       resizeFwd.classList.remove('disabled');
       resizeFwd.removeAttribute('disabled');
@@ -94,7 +93,7 @@
       resizeFwd.classList.add('disabled');
       resizeFwd.setAttribute('disabled', 'disabled');
     }
-  }
+  };
 
   function resizeFormIsValid() {
     var originalWidth = currentResizer._image.naturalWidth;
@@ -104,8 +103,8 @@
     } else {
       return false;
     }
-  };
-  var onInputResizeForm = function () {
+  }
+  var onInputResizeForm = function() {
     setResizerMinMax();
     toggleResizeFwd(resizeFormIsValid());
   };
@@ -204,8 +203,6 @@
       }
     }
   };
-  
-
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
@@ -233,9 +230,8 @@
       filterImage.src = currentResizer.exportImage().src;
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
-    } 
+    }
   };
-
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
