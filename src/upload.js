@@ -71,10 +71,52 @@
    * Проверяет, валидны ли данные, в форме кадрирования.
    * @return {boolean}
    */
-  function resizeFormIsValid() {
-    return true;
-  }
+  var resizerX = document.querySelector('#resize-x');
+  var resizerY = document.querySelector('#resize-y');
+  var resizerSide = document.querySelector('#resize-size');
+  var resizeFwd = document.querySelector('#resize-fwd');
+  var setResizerMinMax = function() {
+    resizerX.min = 0;
+    resizerY.min = 0;
+    resizerSide.min = 0;
+    var originalWidth = currentResizer._image.naturalWidth;
+    var originalHeight = currentResizer._image.naturalHeight;
+    if (parseFloat(resizerSide.value || 0) < originalWidth && parseFloat(resizerSide.value || 0) < originalHeight) {
+      resizerX.max = originalWidth - parseFloat(resizerSide.value || 0);
+      resizerY.max = originalHeight - parseFloat(resizerSide.value || 0);
+    } else {
+      resizerX.max = 0;
+      resizerY.max = 0;
+    }
+    if (originalWidth > resizerX.value && originalHeight > resizerY.value) {
+      resizerSide.max = Math.min(originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
+    } else {
+      resizerSide.max = 0;
+    }
+  };
+  var toggleResizeFwd = function(enable) {
+    if (enable) {
+      resizeFwd.classList.remove('disabled');
+      resizeFwd.removeAttribute('disabled');
+    } else {
+      resizeFwd.classList.add('disabled');
+      resizeFwd.setAttribute('disabled', 'disabled');
+    }
+  };
 
+  function resizeFormIsValid() {
+    var originalWidth = currentResizer._image.naturalWidth;
+    var originalHeight = currentResizer._image.naturalHeight;
+    if ((originalWidth - resizerSide.value - resizerX.value) >= 0 && (originalHeight - resizerSide.value - resizerY.value) >= 0 && resizerX.value >= 0 && resizerY.value >= 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  var onInputResizeForm = function() {
+    setResizerMinMax();
+    toggleResizeFwd(resizeFormIsValid());
+  };
   /**
    * Форма загрузки изображения.
    * @type {HTMLFormElement}
@@ -170,7 +212,6 @@
       }
     }
   };
-
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
@@ -191,17 +232,16 @@
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
+  window.onload = onInputResizeForm;
+  resizeForm.oninput = onInputResizeForm;
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
-
     if (resizeFormIsValid()) {
       filterImage.src = currentResizer.exportImage().src;
-
       resizeForm.classList.add('invisible');
       filterForm.classList.remove('invisible');
     }
   };
-
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
