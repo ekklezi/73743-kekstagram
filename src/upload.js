@@ -232,7 +232,7 @@
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
-  resizeForm.onload = onInputResizeForm;
+  window.onload = onInputResizeForm;
   resizeForm.oninput = onInputResizeForm;
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
