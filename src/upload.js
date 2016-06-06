@@ -81,9 +81,15 @@
     resizerSide.min = 0;
     var originalWidth = currentResizer._image.naturalWidth;
     var originalHeight = currentResizer._image.naturalHeight;
-    resizerX.max = originalWidth - parseFloat(resizerSide.value || 0);
-    resizerY.max = originalHeight - parseFloat(resizerSide.value || 0);
-    resizerSide.max = Math.min(originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
+    if ((originalWidth - parseFloat(resizerSide.value || 0)) >= 0 && (originalHeight - parseFloat(resizerSide.value || 0) >= 0)) {
+        resizerX.max = originalWidth - parseFloat(resizerSide.value || 0);
+        resizerY.max = originalHeight - parseFloat(resizerSide.value || 0);
+        resizerSide.max = Math.min(originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
+        } else {
+        resizerX.max = originalWidth - resizerSide.max;
+        resizerY.max = originalHeight - resizerSide.max; 
+        resizerSide.max = Math.min(originalWidth - resizerX.max, originalHeight - resizerY.max);
+        }
   };
   var toggleResizeFwd = function(enable) {
     if (enable) {
@@ -98,7 +104,7 @@
   function resizeFormIsValid() {
     var originalWidth = currentResizer._image.naturalWidth;
     var originalHeight = currentResizer._image.naturalHeight;
-    if ((originalWidth - resizerSide.value - resizerX.value) > 0 && (originalHeight - resizerSide.value - resizerY.value) > 0 && resizerX.value > 0 && resizerY.value > 0) {
+    if ((originalWidth - resizerSide.value - resizerX.value) >= 0 && (originalHeight - resizerSide.value - resizerY.value) >= 0 && resizerX.value >= 0 && resizerY.value >= 0) {
       return true;
     } else {
       return false;
@@ -223,6 +229,7 @@
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
+  
   resizeForm.oninput = onInputResizeForm;
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
