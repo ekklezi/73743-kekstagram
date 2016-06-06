@@ -81,15 +81,18 @@
     resizerSide.min = 0;
     var originalWidth = currentResizer._image.naturalWidth;
     var originalHeight = currentResizer._image.naturalHeight;
-    if ((originalWidth - parseFloat(resizerSide.value || 0)) >= 0 && (originalHeight - parseFloat(resizerSide.value || 0) >= 0)) {
-        resizerX.max = originalWidth - parseFloat(resizerSide.value || 0);
-        resizerY.max = originalHeight - parseFloat(resizerSide.value || 0);
-        resizerSide.max = Math.min(originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
-        } else {
-        resizerX.max = originalWidth - resizerSide.max;
-        resizerY.max = originalHeight - resizerSide.max; 
-        resizerSide.max = Math.min(originalWidth - resizerX.max, originalHeight - resizerY.max);
-        }
+    if (parseFloat(resizerSide.value || 0) < originalWidth && parseFloat(resizerSide.value || 0) < originalHeight) {
+      resizerX.max = originalWidth - parseFloat(resizerSide.value || 0);
+      resizerY.max = originalHeight - parseFloat(resizerSide.value || 0);
+    } else {
+      resizerX.max = 0;
+      resizerY.max = 0;
+    }
+    if (originalWidth > resizerX.value && originalHeight > resizerY.value) {
+      resizerSide.max = Math.min(originalWidth - parseFloat(resizerX.value || 0), originalHeight - parseFloat(resizerY.value || 0));
+    } else {
+      resizerSide.max = 0;
+    }
   };
   var toggleResizeFwd = function(enable) {
     if (enable) {
@@ -229,7 +232,7 @@
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
-  
+  resizeForm.onload = onInputResizeForm;
   resizeForm.oninput = onInputResizeForm;
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
