@@ -258,16 +258,40 @@
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
+  var browserCookies = require('browser-cookies');
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
-
+    var activeFilter = document.querySelector('.filter-image-preview').classList[1];
+    browserCookies.set('defaultFilter', activeFilter, {
+      expires: getCookiesExpire()
+    });
     cleanupResizer();
     updateBackground();
-
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
   };
-
+  var setDefaultFilter = function() {
+    var defaultFilter = browserCookies.get('defaultFilter');
+    var uploadFilterControls = filterForm.querySelectorAll('input[type=radio]');
+    filterImage.classList.add(defaultFilter);
+    for (var i = 0; i < uploadFilterControls.length; i++) {
+      if (('filter-' + uploadFilterControls[i].value) === defaultFilter) {
+        uploadFilterControls[i].setAttribute('checked', 'checked');
+      }
+    }
+  };
+  setDefaultFilter();
+  var getCookiesExpire = function() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var nearestBirthday = new Date((year) + '-11-02');
+    if (Math.abs((Date.now() - nearestBirthday) / 24 / 60 / 60 / 1000) < 365 / 2) {
+      nearestBirthday = new Date(year + '-11-02');
+    } else {
+      nearestBirthday = new Date((year - 1) + '-11-02');
+    }
+    return Math.abs((Date.now() - nearestBirthday) / 24 / 60 / 60 / 1000);
+  };
   /**
    * Обработчик изменения фильтра. Добавляет класс из filterMap соответствующий
    * выбранному значению в форме.
