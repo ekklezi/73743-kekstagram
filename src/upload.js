@@ -193,11 +193,10 @@
 
         fileReader.onload = function() {
           cleanupResizer();
-
           currentResizer = new Resizer(fileReader.result);
           currentResizer.setElement(resizeForm);
           uploadMessage.classList.add('invisible');
-
+          onInputResizeForm();
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
 
@@ -232,7 +231,6 @@
    * кропнутое изображение в форму добавления фильтра и показывает ее.
    * @param {Event} evt
    */
-  window.onload = onInputResizeForm;
   resizeForm.oninput = onInputResizeForm;
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
@@ -261,10 +259,14 @@
   var browserCookies = require('browser-cookies');
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
-    var activeFilter = document.querySelector('.filter-image-preview').classList[1];
-    browserCookies.set('defaultFilter', activeFilter, {
-      expires: getCookiesExpire()
-    });
+    var defaultFilter = document.querySelector('.filter-image-preview').classList[1];
+    if (defaultFilter === 'filter-none' || defaultFilter === 'filter-chrome' || defaultFilter === 'filter-sepia') {
+      browserCookies.set('defaultFilter', defaultFilter, {
+        expires: getCookiesExpire()
+      });
+    } else {
+      console.error('Data is not correct');
+    }
     cleanupResizer();
     updateBackground();
     filterForm.classList.add('invisible');
@@ -272,25 +274,26 @@
   };
   var setDefaultFilter = function() {
     var defaultFilter = browserCookies.get('defaultFilter');
-    var uploadFilterControls = filterForm.querySelectorAll('input[type=radio]');
     filterImage.classList.add(defaultFilter);
-    for (var i = 0; i < uploadFilterControls.length; i++) {
-      if (('filter-' + uploadFilterControls[i].value) === defaultFilter) {
-        uploadFilterControls[i].setAttribute('checked', 'checked');
-      }
-    }
+    var checkedFilter = document.getElementById('upload-' + defaultFilter);
+    checkedFilter.setAttribute('checked', 'checked');
   };
   setDefaultFilter();
   var getCookiesExpire = function() {
     var today = new Date();
     var year = today.getFullYear();
-    var nearestBirthday = new Date((year) + '-11-02');
-    if (Math.abs((Date.now() - nearestBirthday) / 24 / 60 / 60 / 1000) < 365 / 2) {
-      nearestBirthday = new Date(year + '-11-02');
-    } else {
-      nearestBirthday = new Date((year - 1) + '-11-02');
+    var nearestBirthday;
+    var myBirthdayDate = '-11-02';
+    nearestBirthday = new Date((year) + myBirthdayDate);
+    if (isNaN(nearestBirthday)) {
+      console.error('Date is not correct');
     }
-    return Math.abs((Date.now() - nearestBirthday) / 24 / 60 / 60 / 1000);
+    if ((Date.now() - nearestBirthday) > 0) {
+      nearestBirthday = new Date(year + myBirthdayDate);
+    } else {
+      nearestBirthday = new Date((year - 1) + myBirthdayDate);
+    }
+    return Math.ceil((Date.now() - nearestBirthday) / 24 / 60 / 60 / 1000);
   };
   /**
    * Обработчик изменения фильтра. Добавляет класс из filterMap соответствующий
