@@ -234,6 +234,7 @@
   resizeForm.oninput = onInputResizeForm;
   resizeForm.onsubmit = function(evt) {
     evt.preventDefault();
+    setDefaultFilter();
     if (resizeFormIsValid()) {
       filterImage.src = currentResizer.exportImage().src;
       resizeForm.classList.add('invisible');
@@ -278,7 +279,6 @@
     var checkedFilter = document.getElementById('upload-' + defaultFilter);
     checkedFilter.setAttribute('checked', 'checked');
   };
-  setDefaultFilter();
   var getCookiesExpire = function() {
     var today = new Date();
     var year = today.getFullYear();
